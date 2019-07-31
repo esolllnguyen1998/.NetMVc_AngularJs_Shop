@@ -6,7 +6,35 @@ using System.Threading.Tasks;
 
 namespace TeduShop.Data.Infrastructure
 {
-    class UnitOfWork
+    public class UnitOfWork :IUnitOfWork
     {
+        private readonly IDbFactory _dbFactory;
+        private TeduShopDbContext dbContext;
+
+        public UnitOfWork(IDbFactory dbFactory)
+        {
+            _dbFactory = dbFactory;
+        }
+
+        public TeduShopDbContext DbContext
+        {
+            get
+            {
+                if (dbContext == null)
+                {
+                    dbContext = _dbFactory.Init();
+                    return dbContext;
+                }
+                else
+                {
+                    return dbContext;
+                }
+            }
+        }
+
+        public void Commit()
+        {
+            dbContext.SaveChanges();
+        }
     }
 }
